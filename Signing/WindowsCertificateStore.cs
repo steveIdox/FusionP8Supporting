@@ -66,19 +66,19 @@ namespace idox.eim.fusionp8.supporting
             }
         }
 
-        public static byte[] SignContent(byte[] data, X509Certificate2 cert)
-        {
-            if (!cert.HasPrivateKey)
-                throw new InvalidOperationException("Certificate does not have a private key");
+        //public static byte[] SignContent(byte[] data, X509Certificate2 cert)
+        //{
+        //    if (!cert.HasPrivateKey)
+        //        throw new InvalidOperationException("Certificate does not have a private key");
 
-            using (var rsa = cert.PrivateKey as RSACryptoServiceProvider)
-            {
-                if (rsa == null)
-                    throw new InvalidOperationException("Certificate does not have an RSA private key");
+        //    using (var rsa = cert.PrivateKey as RSACryptoServiceProvider)
+        //    {
+        //        if (rsa == null)
+        //            throw new InvalidOperationException("Certificate does not have an RSA private key");
 
-                return rsa.SignData(data, "SHA256");
-            }
-        }
+        //        return rsa.SignData(data, "SHA256");
+        //    }
+        //}
 
         public static bool VerifySignature(byte[] data, byte[] signature, X509Certificate2 cert)
         {

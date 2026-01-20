@@ -34,19 +34,19 @@ namespace Stamping
         {
             // Use the working text stamp approach with enhanced certificate info
             //X509Certificate2 x509Certificate2 = WindowsCertificateStore.LoadCert(cert.Thumbprint);
-            string certInfo = $"DIGITALLY SIGNED\nSigned by: {cert.Subject}\nIssuer: {cert.Issuer}\nValid until: {cert.NotAfter:yyyy-MM-dd}\nThumbprint: {cert.Thumbprint}";
+            string certInfo = $"DIGITALLY SIGNED\nSigned by: {cert.subject}\nIssuer: {cert.issuer}\nValid until: {cert.notAfter:yyyy-MM-dd}\nThumbprint: {cert.thumbprint}";
             return Stamp.ApplyText(file, certInfo, stampConfiguration);
         }
         public static byte[] AddVisibleCertificateStampImage(string file, string stampFile, Common.Objects.Certificate cert, Common.Objects.StampConfiguration stampConfiguration)
         {
             // Use the working text stamp approach with enhanced certificate info
-            string certInfo = $"DIGITALLY SIGNED\nSigned by: {cert.Subject}\nIssuer: {cert.Issuer}\nValid until: {cert.NotAfter:yyyy-MM-dd}\nThumbprint: {cert.Thumbprint}";
+            string certInfo = $"DIGITALLY SIGNED\nSigned by: {cert.subject}\nIssuer: {cert.issuer}\nValid until: {cert.notAfter:yyyy-MM-dd}\nThumbprint: {cert.thumbprint}";
             return Stamp.ApplyImage(file, stampFile, stampConfiguration);
         }
         public static byte[] AddVisibleCertificateStampImage(string file, Common.Objects.Certificate cert, Common.Objects.StampConfiguration stampConfiguration)
         {
             // Use the working text stamp approach with enhanced certificate info
-            string certInfo = $"DIGITALLY SIGNED\nSigned by: {cert.Subject}\nIssuer: {cert.Issuer}\nValid until: {cert.NotAfter:yyyy-MM-dd}\nThumbprint: {cert.Thumbprint}";
+            string certInfo = $"DIGITALLY SIGNED\nSigned by: {cert.subject}\nIssuer: {cert.issuer}\nValid until: {cert.notAfter:yyyy-MM-dd}\nThumbprint: {cert.thumbprint}";
             string imageFile = CreateImageFromText(certInfo, stampConfiguration);
             return Stamp.ApplyImage(file, imageFile, stampConfiguration);
         }

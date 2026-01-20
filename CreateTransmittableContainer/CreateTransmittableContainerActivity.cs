@@ -9,11 +9,11 @@ using Sword.Fusion.Api.Objects;
 using Sword.Fusion.Api.Contents;
 using System.Xml.Linq;
 
-namespace CreateTransmittableContainer
+namespace TransmittablePackageActivity
 {
-    public class CreateTransmittableContainerActivity : IActivity
+    public class TransmittablePackageActivity : IActivity
     {
-        private const string ActivityName = "CreateTransmittableContainerActivity";
+        private const string ActivityName = "TransmittablePackageActivity";
         public bool CanDo(ActivityExecutionContext context)
         {
             IPersistableObject activityObject = context.LifecycleObject;
@@ -32,8 +32,9 @@ namespace CreateTransmittableContainer
             //  get our selected doc
             var currentDocument = context.LifecycleObject as IDocument;
 
+            IDocument newDocument = null;
             Sword.FusionP8.ApiImpl.Containers.ContainerLogicalDocumentsImpl container =
-                new Sword.FusionP8.ApiImpl.Containers.ContainerLogicalDocumentsImpl(currentDocument);
+                new Sword.FusionP8.ApiImpl.Containers.ContainerLogicalDocumentsImpl(newDocument);
 
             //  Add self as content
             container.Documents.Add(currentDocument);

@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.OpenApi.Models;
 
 namespace SigningWebApi
 {
@@ -7,27 +10,42 @@ namespace SigningWebApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Signing API",
+                    Version = "v1",
+                    Description = "API for document signing and certificate management"
+                });
+
+                // Ignore Stream types in Swagger
+                c.MapType<Stream>(() => new OpenApiSchema { Type = "string", Format = "binary" });
+            });
 
             var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            var addresses = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()?.Addresses;
+            if (addresses != null && addresses.Count > 0)
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                Console.WriteLine($"SigningWebApi listening on: {string.Join(", ", addresses)}");
+            }
+            else
+            {
+                // Fallback to configuration
+                var urls = app.Configuration["urls"] ?? "http://localhost:5000;https://localhost:5001";
+                Console.WriteLine($"SigningWebApi configured for: {urls}");
             }
 
+
+
+            // Always enable Swagger for testing
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();

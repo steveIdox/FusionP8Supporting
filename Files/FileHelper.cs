@@ -12,6 +12,7 @@ namespace Files
     using System.Text;
     using System.Threading.Tasks;
     using System.IO;
+    using System.Runtime.InteropServices.ComTypes;
 
     namespace idox.eim.fusionp8
     {
@@ -82,6 +83,12 @@ namespace Files
                     string fileName = Path.ChangeExtension(Path.GetRandomFileName(), ext);
                     string tempFilePath = Path.Combine(Path.GetTempPath(), fileName);
 
+                    return tempFilePath;
+                }
+                if(!String.IsNullOrEmpty(filepath))
+                {
+                    //  we have a filename but no path
+                    string tempFilePath = Path.Combine(Path.GetTempPath(), filepath);
                     return tempFilePath;
                 }
                 return String.Empty;

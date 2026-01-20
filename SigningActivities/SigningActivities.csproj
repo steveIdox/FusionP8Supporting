@@ -51,6 +51,10 @@
     <Compile Include="SignDocumentActivity.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{e8cd30f0-c7aa-45b7-b31f-7c2d727824c5}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Files\Files.csproj">
       <Project>{02b0b75a-8b93-49c0-8241-22637c020ff6}</Project>
       <Name>Files</Name>

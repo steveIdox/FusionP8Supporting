@@ -13,6 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
+using Common.Objects;
+
 namespace SampleActivities
 {
     public class SignDocumentActivity : IActivity
@@ -61,8 +63,13 @@ namespace SampleActivities
 
             try
             {
+                var baseUrl = "https://localhost:44300/";
+
+                //  crfeate instance of SigningWebApiClient
+                var client = new SigningApiClient(baseUrl);
+
                 //  get list of certificates with private keys (needed for signing)
-                var certificates = WindowsCertificateStore.GetCertificatesWithPrivateKey();
+                List<Common.Objects.Certificate> certificates = client.GetCertificatesWithPrivateKeysAsync().Result;
 
                 if (certificates == null || certificates.Count == 0)
                 {
@@ -75,10 +82,10 @@ namespace SampleActivities
                 for (int i = 0; i < certificates.Count; i++)
                 {
                     var cert = certificates[i];
-                    Logging.Log.Info($"  [{i + 1}] Subject: {cert.Subject}",ActivityName);
-                    Logging.Log.Info($"      Issuer: {cert.Issuer}",ActivityName);
-                    Logging.Log.Info($"      Thumbprint: {cert.Thumbprint}",ActivityName);
-                    Logging.Log.Info($"      Valid From: {cert.NotBefore} To: {cert.NotAfter}",ActivityName);
+                    Logging.Log.Info($"  [{i + 1}] Subject: {cert.subject}",ActivityName);
+                    Logging.Log.Info($"      Issuer: {cert.issuer}",ActivityName);
+                    Logging.Log.Info($"      Thumbprint: {cert.thumbprint}",ActivityName);
+                    Logging.Log.Info($"      Valid From: {cert.notBefore} To: {cert.notAfter}",ActivityName);
                 }
 
                 //  prompt user to select a certificate
@@ -92,26 +99,27 @@ namespace SampleActivities
                 }
 
                 var selectedCert = certificates[selection - 1];
-                Logging.Log.Info($"Selected certificate: {selectedCert.Subject}", ActivityName);
+                Logging.Log.Info($"Selected certificate: {selectedCert.subject}", ActivityName);
 
                 //  get document content
                 Sword.Fusion.Api.Contents.IFileContents contents =
                     currentDocument.RetrieveContents<Sword.Fusion.Api.Contents.IFileContents>();
 
-                BinaryReader binaryReader = new BinaryReader(contents.FileElement.GetStream());
-                binaryReader.BaseStream.Position = 0;
-                byte[] documentContent = binaryReader.ReadBytes((int)binaryReader.BaseStream.Length);
-
-                //  sign the content
-                byte[] signature = WindowsCertificateStore.SignContent(documentContent, selectedCert);
+                //  create a HASH from the content
+                byte[] signature = client.SignDocumentAsync(contents.FileElement.GetStream(),
+                    contents.FileElement.FileName,
+                    selectedCert.thumbprint).Result;
 
                 //  store the signature (you can customize how to store it based on your requirements)
                 //  Option A: Store as a properties
                 currentDocument.Properties["DigitalSignature"] =  Convert.ToBase64String(signature);
-                currentDocument.Properties["SignatureCertificateThumbprint"] =  selectedCert.Thumbprint;
+                currentDocument.Properties["SignatureCertificateThumbprint"] =  selectedCert.thumbprint;
                 currentDocument.Properties["SignatureDate"] =  DateTime.UtcNow.ToString("o");
-                //  This can 
 
+                //  Option B: Store as a file
+                //  var signatureFile = new Sword.Fusion.Api.Contents.FileContents
+                //  {
+                //      FileElement = new Sword.Fusion.Api.Contents.FileElement
 
                 Logging.Log.Info($"Document signed successfully", ActivityName);
                 Logging.Log.Info($"Signature stored as base64 string in 'DigitalSignature' property", ActivityName);

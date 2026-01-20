@@ -7,8 +7,8 @@
     <ProjectGuid>{50D7BCAC-6234-44C8-B18A-68E9F292F98C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CreateTransmittableContainer</RootNamespace>
-    <AssemblyName>CreateTransmittableContainer</AssemblyName>
+    <RootNamespace>TransmittablePackageActivity</RootNamespace>
+    <AssemblyName>TransmittablePackageActivity</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -31,11 +31,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FileNetServices, Version=4.6.2.3, Culture=neutral, PublicKeyToken=9dbaddf5bf76277a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\idox\FusionP8\bin\FileNetServices.dll</HintPath>
+    </Reference>
+    <Reference Include="FileNetWrappers, Version=4.6.2.3, Culture=neutral, PublicKeyToken=9dbaddf5bf76277a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\idox\FusionP8\bin\FileNetWrappers.dll</HintPath>
+    </Reference>
     <Reference Include="Fusion.Api">
       <HintPath>..\External\Idox\Fusion.Api.dll</HintPath>
     </Reference>
     <Reference Include="Fusion.BusinessApi">
       <HintPath>..\External\Idox\Fusion.BusinessApi.dll</HintPath>
+    </Reference>
+    <Reference Include="FusionCore, Version=4.6.2.3, Culture=neutral, PublicKeyToken=9dbaddf5bf76277a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\idox\FusionP8\bin\FusionCore.dll</HintPath>
     </Reference>
     <Reference Include="FusionP8.ApiImpl">
       <HintPath>..\..\..\idox\FusionP8\bin\FusionP8.ApiImpl.dll</HintPath>
@@ -51,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CreateTransmittableContainerActivity.cs" />
+    <Compile Include="LT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
