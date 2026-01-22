@@ -1,0 +1,19 @@
+﻿<lifecycle name="ProjectDocumentLifecycle" lifecycle-object="ProjectDocument" xmlns:a="http://www.idoxgroup.com/fusion/configuration/lifecycles/activities" xmlns="http://www.idoxgroup.com/fusion/configuration/lifecycles">
+	<state name="Work In Progress" posX="0" posY="0">
+		<!-- Custom activity for PDF watermark -->
+		<to state="Work In Progress" name="signDocumentWithCertificate" condition="ProjectDocument.PrimaryAttachmentName like '%.pdf' OR ProjectDocument.PrimaryAttachmentName like '%.PDF'">
+			<text>Sign PDF</text>
+			<required-command-code>Amend</required-command-code>
+			<activities>
+				<!-- Mandatory parameters -->
+				<a:set-context-parameter parameter-name="Signing:SigningWebApiUrl" value="http://localhost:5045" />
+				<a:set-context-parameter parameter-name="Signing:Thumbnail" value="XXXXXXXXXXXXXXXXXXXXXXX" />
+				<a:invoke-custom-activity name="">
+					<a:type>idox.eim.fusionp8.customactivities.SignDocumentActivity</a:type>
+					<a:assembly>SigningActivities</a:assembly>
+				</a:invoke-custom-activity>
+			</activities>
+		</to>
+	</state>
+	<referenced-objects></referenced-objects>
+</lifecycle><?xml version="1.0" encoding="utf-8" ?> 

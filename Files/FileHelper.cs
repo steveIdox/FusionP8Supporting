@@ -50,7 +50,17 @@ namespace Files
                 }
 
                 return tempFilePath; // Return the path for later use
-            } 
+            }
+            public static bool SaveTo(byte[] bytes, string fileName)
+            {
+                // Write the stream content to the temp file
+                using (FileStream fileStream = File.Create(fileName))
+                {
+                    fileStream.Write(bytes, 0, bytes.Length);
+                }
+
+                return true; // Return the path for later use
+            }
             public static string ReadStream(Stream stream)
             {
                 if (stream.CanSeek)

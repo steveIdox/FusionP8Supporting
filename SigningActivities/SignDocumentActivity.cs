@@ -15,7 +15,7 @@ using System.Xml.Linq;
 
 using Common.Objects;
 
-namespace SampleActivities
+namespace idox.eim.fusionp8.customactivities
 {
     public class SignDocumentActivity : IActivity
     {
@@ -63,10 +63,17 @@ namespace SampleActivities
 
             try
             {
-                var baseUrl = "https://localhost:44300/";
+                var signingUrl = System.Configuration.ConfigurationManager.AppSettings["SigningWebApiUrl"];
+                if (string.IsNullOrEmpty(signingUrl))
+                {
+                    Console.WriteLine($"Signing WebApi URL not valid: [{signingUrl}]");
+                    return;
+                }
+                Console.WriteLine($"Signing WebApi URL [{signingUrl}]");
+
 
                 //  crfeate instance of SigningWebApiClient
-                var client = new SigningApiClient(baseUrl);
+                var client = new SigningApiClient(signingUrl);
 
                 //  get list of certificates with private keys (needed for signing)
                 List<Common.Objects.Certificate> certificates = client.GetCertificatesWithPrivateKeysAsync().Result;

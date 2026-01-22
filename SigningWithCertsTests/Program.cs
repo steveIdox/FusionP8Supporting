@@ -11,27 +11,39 @@ using System.Net.Http.Json;
 using System.Security.AccessControl;
 using Newtonsoft.Json;
 using Common.Objects;
+using System.IO;
 
 namespace SigningWithCertsTests
 {
     internal class Program
     {
-        private static string signingUrl = "https://localhost:7060/signing";
-
         static void Main(string[] args)
         {
             Console.WriteLine("Signing tests");
-            var file = @"d:\\files\\pdf\\d.pdf";
-            if(!System.IO.File.Exists(file))
+            var testFile = System.Configuration.ConfigurationManager.AppSettings["TestFile"];
+            if(!System.IO.File.Exists(testFile))
             {
-                Console.WriteLine($"File not found: {file}");
+                Console.WriteLine($"File not found: [{testFile}]");
                 return;
             }
-            
+            Console.WriteLine($"Using TestFile [{testFile}]");
+
+            var signingUrl = System.Configuration.ConfigurationManager.AppSettings["SigningWebApiUrl"];
+            if(string.IsNullOrEmpty(signingUrl))
+            {
+                Console.WriteLine($"Signing WebApi URL not valid: [{signingUrl}]");
+                return;
+            }
+            Console.WriteLine($"Signing WebApi URL [{signingUrl}]");
 
             SigningApiClient signingApiClient = new SigningApiClient(signingUrl);
 
             var certs = signingApiClient.GetCertificatesWithPrivateKeysAsync().Result;
+            if (certs == null || certs.Count == 0)
+            {
+                Console.WriteLine($"No suitable Certificates not found");
+                return;
+            }
 
             Common.Objects.Certificate selectedCert = null;
             string thumbprint = null;
@@ -58,16 +70,21 @@ namespace SigningWithCertsTests
                 stampConfiguration.VerticalAlignment = Common.Objects.VerticalStampAlignment.Bottom;
                 stampConfiguration.HorizontalAlignment = Common.Objects.HorizontalStampAlignment.Center;
 
+                FileInfo testFileInfo = new FileInfo(testFile);
+                var tempFileName = $"temp-{testFileInfo.Name}";
+
+                var tempFilePath = Path.Combine(testFileInfo.Directory.FullName, tempFileName);
+
                 Common.Objects.Document document = new Common.Objects.Document();
-                document.Name = "d.pdf";
-                document.Stream = new System.IO.FileStream(file, System.IO.FileMode.Open);
+                document.Name = testFileInfo.Name;
+                document.Stream = new System.IO.FileStream(testFile, System.IO.FileMode.Open);
                 document.Type = "application/pdf";
 
                 //byte[] signedFile = Stamping.CertificateStamp.AddVisibleCertificateStampText(file, selectedCert, stampConfiguration);
                 byte[] embddedSignatureFile = signingApiClient.SignPdfAsync(document.Stream,document.Name, thumbprint, stampConfiguration).Result;
 
 
-                string tempFile = FileHelper.SaveToTempFile(embddedSignatureFile, file);
+                var tempFile = FileHelper.SaveToTempFile(embddedSignatureFile, tempFileName);
             }
         }
     }

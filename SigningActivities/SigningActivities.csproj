@@ -38,6 +38,7 @@
       <HintPath>..\SampleActivities\External\Fusion.BusinessApi.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -67,6 +68,9 @@
       <Project>{6dc1e2c7-3b5e-4dc5-b7a4-6628c53f0709}</Project>
       <Name>Signing</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SignDocumentLifecycleEntry.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
