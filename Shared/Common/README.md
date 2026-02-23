@@ -1,31 +1,27 @@
-# Shared Libraries
+# Common Library
 
-Core foundational libraries providing common data models, utilities, and cross-cutting concerns used across all FusionP8Supporting projects.
+Core foundational library providing common data models, utilities, and cross-cutting concerns used across all FusionP8Supporting projects.
 
 ## Overview
 
-The Shared Libraries group consists of five essential .NET Standard 2.0 libraries that provide:
-- **Common** - Shared data models and objects
+The Common library (.NET Standard 2.0) provides:
+- **Objects** - Shared data models (Certificate, Document, StampConfiguration)
 - **Logging** - Unified logging abstraction
 - **Files** - File and stream utilities
-- **Stamping** - PDF stamping and visual marking
-- **Format** - Data formatting helpers
+- **Format** - Data formatting helpers (WebApi, Json)
 
 ## Target Framework
 
-All shared libraries target **.NET Standard 2.0**, making them compatible with:
+The Common library targets **.NET Standard 2.0**, making it compatible with:
 - .NET Framework 4.7.2+
 - .NET Core/.NET 5+
 - .NET 8.0
 
 ## Library Reference
 
-### Common (netstandard2.0)
+### Objects
 
 Provides shared data models used throughout the solution.
-
-**Dependencies:**
-- Newtonsoft.Json (v13.0.4)
 
 #### Certificate Class
 
@@ -114,9 +110,9 @@ var config = new StampConfiguration
 };
 ```
 
-### Logging (netstandard2.0)
+### Logging
 
-Provides unified logging abstraction across the solution.
+Provides unified logging abstraction for the application.
 
 **Dependencies:**
 - Microsoft.CSharp (v4.7.0)
@@ -144,9 +140,9 @@ Log.Debug("Debug information", "SigningActivity");
 // Output format: "ActivityName: message"
 ```
 
-### Files (netstandard2.0)
+### Files
 
-Provides file and stream utility functions.
+File and stream utilities for document processing.
 
 **Dependencies:**
 - Microsoft.CSharp (v4.7.0)
@@ -198,101 +194,11 @@ string uniquePath = FileHelper.GetTempFilePathWithExtension(".pdf");
 FileHelper.DeleteFile(tempPath);
 ```
 
-### Stamping (netstandard2.0)
+### Format
 
-Adds visual stamps and signatures to PDF documents.
-
-**Dependencies:**
-- Aspose.PDF (v25.3.0) - PDF manipulation
-- System.Configuration.ConfigurationManager (v8.0.1)
-- Common, Files, Logging projects
-
-#### CertificateStamp Class
-
-Apply certificate information as visual stamps on PDFs.
-
-```csharp
-using Stamping;
-using Common.Objects;
-
-public class CertificateStamp
-{
-    // Apply text stamp with certificate details
-    public static byte[] SimpleTextStampFromCertificate(
-        string file,
-        string thumbprint,
-        StampConfiguration stampConfiguration);
-    
-    // Apply text stamp from X509Certificate2
-    public static byte[] SimpleTextStampFromCertificate(
-        string file,
-        X509Certificate2 cert,
-        StampConfiguration stampConfiguration);
-    
-    // Add visible certificate information as text
-    public static byte[] AddVisibleCertificateStampText(
-        string file,
-        Certificate cert,
-        StampConfiguration stampConfiguration);
-    
-    // Add certificate stamp with custom image
-    public static byte[] AddVisibleCertificateStampImage(
-        string file,
-        string stampFile,
-        Certificate cert,
-        StampConfiguration stampConfiguration);
-}
-
-// Usage
-var config = new StampConfiguration
-{
-    HorizontalAlignment = HorizontalStampAlignment.Center,
-    VerticalAlignment = VerticalStampAlignment.Middle,
-    FontSize = 36
-};
-
-var cert = new Certificate(x509Cert);
-byte[] stampedPdf = CertificateStamp.AddVisibleCertificateStampText(
-    "document.pdf",
-    cert,
-    config);
-
-File.WriteAllBytes("stamped-document.pdf", stampedPdf);
-```
-
-**Stamp Information Included:**
-```
-DIGITALLY SIGNED
-Signed by: CN=John Doe, O=Company
-Issuer: CN=Root CA
-Valid until: 2025-01-15
-Thumbprint: ABC123...
-```
-
-#### Stamp Class
-
-Low-level stamping operations.
-
-```csharp
-public class Stamp
-{
-    // Apply text to PDF
-    public static byte[] ApplyText(
-        string file,
-        string text,
-        StampConfiguration stampConfiguration);
-    
-    // Apply image to PDF
-    public static byte[] ApplyImage(
-        string file,
-        string imageFile,
-        StampConfiguration stampConfiguration);
-}
-```
-
-### Format (netstandard2.0)
-
-Provides data formatting utilities.
+Data formatting helpers:
+- **WebApi** - Web API formatting utilities
+- **Json** - JSON formatting using Newtonsoft.Json
 
 **Dependencies:**
 - Newtonsoft.Json (v13.0.4)
