@@ -16,6 +16,19 @@ FusionP8Supporting serves as a hub for various supporting code assets including:
 > - .NET Framework 4.7  
 > - .NET 8
 
+## Installation
+
+Install via NuGet:
+
+```
+dotnet add package FusionP8Supporting
+```
+or
+```
+Install-Package FusionP8Supporting
+```
+
+[View on NuGet.org](https://www.nuget.org/packages/FusionP8Supporting)
 ## Usage
 
 - Each library or integration addresses a particular requirement as described in its respective folder or documentation.
