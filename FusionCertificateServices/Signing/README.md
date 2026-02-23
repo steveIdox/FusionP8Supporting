@@ -1,177 +1,135 @@
-# Signing Solution
+# Signing Library
 
-A comprehensive digital document signing solution for Fusion P8, providing certificate-based document signing with visible stamps, hash generation, and PDF document signing capabilities.
+A .NET Standard 2.0 library providing Windows Certificate Store integration and REST API client functionality for document signing operations.
 
 ## Overview
 
-The Signing solution provides:
-- **Windows Certificate Store integration** - Load and manage X.509 certificates from the local machine certificate store
-- **Document Signing API** - REST API for signing documents with digital signatures
-- **PDF Stamping** - Add visible certificate information to signed PDF documents
-- **Fusion P8 Custom Activity** - Integrates document signing into Fusion P8 lifecycle workflows
-- **Certificate Management** - List and retrieve available certificates with private key support
+The Signing library is the core component of the document signing solution. It provides:
+- **Windows Certificate Store Access** - Load and manage X.509 certificates
+- **REST API Client** - HTTP client for communicating with SigningWebApi
+- **Certificate Management** - Retrieve certificates with private key support
+- **Cross-Platform Compatibility** - Built on .NET Standard 2.0
 
-## Architecture
+## Features
 
-The solution consists of three main components:
+- **Certificate Store Integration** - Direct access to Windows Certificate Store
+- **Private Key Detection** - Identify certificates suitable for signing
+- **REST Client** - Built-in HTTP client for SigningWebApi communication
+- **Certificate Enumeration** - List and filter available certificates
+- **JSON Support** - Newtonsoft.Json integration for data serialization
 
-### 1. Core Library: `Signing` (.NET Standard 2.0)
-The foundational library providing certificate management and API client functionality.
+## Prerequisites
 
-**Key Classes:**
-- `WindowsCertificateStore` - Manages access to Windows certificate stores
-- `SigningApiClient` - HTTP client for the Signing Web API
+- **.NET Standard 2.0** compatible platform
+- **.NET Framework 4.7.2+**, **.NET Core 2.0+**, or **.NET 8+**
+- Windows Certificate Store (for certificate operations)
 
-### 2. REST API: `SigningWebApi` (.NET 8.0 - Windows)
-A self-contained, modern ASP.NET Core Web API that handles document signing and certificate operations.
+## Project Structure
 
-**Key Components:**
-- `SigningController` - REST endpoints for signing operations
-- `SigningHelper` - Core signing logic using RSA cryptography
-- `CertificateHelper` - Certificate retrieval and management
-
-### 3. Custom Activity: `SigningActivities` (.NET Framework 4.7.2)
-A Fusion P8 custom activity that integrates document signing into document lifecycle workflows.
-
-**Components:**
-- `SignDocumentActivity` - Lifecycle activity for signing documents
-- `SignDocumentLifecycleEntry.xml` - Lifecycle configuration
-
-## Target Frameworks
-
-- **Signing** - .NET Standard 2.0 (compatible with .NET Framework 4.7.2+, .NET Core/.NET 5+)
-- **SigningWebApi** - .NET 8.0 (Windows-specific)
-- **SigningActivities** - .NET Framework 4.7.2
-- **SigningWithCertsTests** - Unit tests for signing functionality
+- **WindowsCertificateStore.cs** - Certificate store access and management
+- **SigningWebApiClient.cs** - HTTP client for REST API communication
 
 ## Dependencies
 
-### Signing (Core Library)
-- Newtonsoft.Json (v13.0.4)
-- Common project
+- **FusionP8Supporting.Common** (v1.0.0) - Common data models and utilities
+- **Newtonsoft.Json** (v13.0.4) - JSON serialization and deserialization
 
-### SigningWebApi
-- Swashbuckle.AspNetCore (v6.6.2) - Swagger/OpenAPI support
-- Signing, Common, Files, Logging, Stamping projects
+## Classes
 
-### SigningActivities
-- Fusion.Api & Fusion.BusinessApi (DLLs)
-- Signing, Common, Files, Logging projects
+### WindowsCertificateStore
 
-## REST API Endpoints
+Provides static methods for accessing the Windows Certificate Store.
 
-### GET /api/Signing/certificates
-Retrieve all available certificates from the Windows certificate store.
+**Key Methods:**
 
-**Response:**
-```json
-[
-  {
-    "thumbprint": "ABC123...",
-    "subject": "CN=John Doe, O=Company",
-    "issuer": "CN=Root CA",
-    "validFrom": "2024-01-01",
-    "validTo": "2025-01-01",
-    "hasPrivateKey": true
-  }
-]
+```csharp
+// Load a specific certificate by thumbprint
+X509Certificate2 LoadCert(string thumbprint);
+
+// Get all certificates from a store
+List<X509Certificate2> GetCertificates(StoreName storeName, StoreLocation storeLocation);
+
+// Get certificates with private keys only
+List<X509Certificate2> GetCertificatesWithPrivateKey(StoreName storeName, StoreLocation storeLocation);
+
+// Get certificate details
+X509Certificate2 GetCertificateByThumbprint(string thumbprint);
 ```
 
-### GET /api/Signing/certificates/private-keys
-Retrieve certificates with private keys available (required for signing).
+### SigningWebApiClient
 
-**Response:** Same format as above, filtered to include only certificates with private keys.
+HTTP client for communicating with the SigningWebApi REST endpoints.
 
-### POST /api/Signing/sign
-Sign a document with a certificate.
+**Key Methods:**
 
-**Request:**
-- `file` (multipart/form-data) - Document file to sign
-- `thumbprint` (string) - Certificate thumbprint
+```csharp
+// Constructor
+SigningWebApiClient(string baseUrl);
 
-**Response:** Signed document as binary file
+// Get all available certificates
+Task<List<Certificate>> GetCertificatesAsync();
 
-```bash
-curl -X POST https://localhost:5001/api/Signing/sign \
-  -F "file=@mydocument.pdf" \
-  -F "thumbprint=ABC123..."
+// Get certificates with private keys
+Task<List<Certificate>> GetCertificatesWithPrivateKeysAsync();
+
+// Sign a document
+Task<byte[]> SignDocumentAsync(Stream fileStream, string fileName, string thumbprint);
+
+// Generate hash with stamp
+Task<byte[]> HashDocumentAsync(Stream fileStream, string fileName, string thumbprint);
+
+// Sign PDF with visible stamp
+Task<byte[]> SignPdfAsync(Stream fileStream, string fileName, string thumbprint, 
+    StampConfiguration stampConfig, Stream stampImage = null);
 ```
-
-### POST /api/Signing/hash
-Generate a hash of a document with visible certificate stamp.
-
-**Request:**
-- `file` (multipart/form-data) - Document file to hash
-- `thumbprint` (string) - Certificate thumbprint
-
-**Response:** Document with visible stamp information as binary file
-
-### POST /api/Signing/signpdf
-Sign a PDF document with visible certificate stamp.
-
-**Request:**
-- `file` (multipart/form-data) - PDF file to sign
-- `thumbprint` (string) - Certificate thumbprint
-- `stampConfiguration` (StampConfiguration object) - Stamp appearance settings
-- `stampImage` (optional, multipart/form-data) - Custom stamp image
-
-**Response:** Signed PDF with visible stamp as binary file
-
-## Configuration
-
-### SigningWebApi Configuration
-
-**appsettings.json:**
-```json
-{
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information"
-    }
-  },
-  "AllowedHosts": "*"
-}
-```
-
-### SigningActivities Configuration (Fusion P8)
-
-Configure the Signing Web API URL in `app.config`:
-
-```xml
-<configuration>
-  <appSettings>
-    <add key="SigningWebApiUrl" value="https://signing-server:8443" />
-  </appSettings>
-</configuration>
-```
-
-Set activity parameters in Fusion P8:
-- **SigningWebApiUrl** - Base URL of the Signing Web API (e.g., `https://localhost:5001`)
 
 ## Usage Examples
 
-### Example 1: Using the Signing Web API Directly
-
-```bash
-# Get available certificates
-curl https://signing-server:8443/api/Signing/certificates
-
-# Sign a document
-curl -X POST https://signing-server:8443/api/Signing/sign \
-  -F "file=@document.pdf" \
-  -F "thumbprint=1234567890ABCDEF" \
-  -o signed-document.pdf
-```
-
-### Example 2: Using SigningApiClient in Code
+### Example 1: Load a Certificate from Windows Store
 
 ```csharp
-using idox.eim.fusionp8.supporting;
+using Signing;
+using System.Security.Cryptography.X509Certificates;
+
+// Get certificate by thumbprint
+var certificate = WindowsCertificateStore.LoadCert("1234567890ABCDEF");
+
+if (certificate != null)
+{
+    Console.WriteLine($"Certificate: {certificate.Subject}");
+    Console.WriteLine($"Valid From: {certificate.NotBefore}");
+    Console.WriteLine($"Valid To: {certificate.NotAfter}");
+    Console.WriteLine($"Has Private Key: {certificate.HasPrivateKey}");
+}
+```
+
+### Example 2: List All Certificates with Private Keys
+
+```csharp
+using Signing;
+using System.Security.Cryptography.X509Certificates;
+
+// Get signing certificates
+var signingCerts = WindowsCertificateStore.GetCertificatesWithPrivateKey(
+    StoreName.My,
+    StoreLocation.LocalMachine
+);
+
+foreach (var cert in signingCerts)
+{
+    Console.WriteLine($"{cert.Subject} - {cert.Thumbprint}");
+}
+```
+
+### Example 3: Use REST API Client for Document Signing
+
+```csharp
+using Signing;
 
 // Create client
-var client = new SigningApiClient("https://signing-server:8443");
+var client = new SigningWebApiClient("https://signing-server:8443");
 
-// Get certificates with private keys
+// Get available signing certificates
 var certificates = await client.GetCertificatesWithPrivateKeysAsync();
 
 // Sign a document
@@ -180,209 +138,183 @@ using (var fileStream = File.OpenRead("document.pdf"))
     byte[] signedDocument = await client.SignDocumentAsync(
         fileStream,
         "document.pdf",
-        "1234567890ABCDEF"
+        certificates[0].Thumbprint
     );
     
     File.WriteAllBytes("signed-document.pdf", signedDocument);
 }
 ```
 
-### Example 3: Fusion P8 Custom Activity Integration
-
-The `SignDocumentActivity` automatically:
-1. Retrieves the document from the Fusion P8 lifecycle context
-2. Fetches available certificates from the Signing Web API
-3. Prompts the user to select a certificate
-4. Signs the document using the selected certificate
-5. Stores the signed document back in the repository
-
-Configure in Fusion P8 Activity Designer:
-- **Activity Type:** SignDocumentActivity
-- **Parameters:**
-  - `SigningWebApiUrl` = `https://signing-server:8443`
-
-## Windows Certificate Store Access
-
-The solution uses the Windows Certificate Store to retrieve signing certificates. Certificates must be:
-1. Installed in the **LocalMachine\Personal** store
-2. Have a private key associated (for signing operations)
-
-### Loading a Specific Certificate
+### Example 4: Sign PDF with Visible Stamp
 
 ```csharp
-using idox.eim.fusionp8.supporting;
-using System.Security.Cryptography.X509Certificates;
+using Signing;
 
-// Load certificate by thumbprint
-X509Certificate2 cert = WindowsCertificateStore.LoadCert("1234567890ABCDEF");
+var client = new SigningWebApiClient("https://signing-server:8443");
 
-// Get all certificates
-var allCerts = WindowsCertificateStore.GetCertificates(
-    StoreName.My,
-    StoreLocation.LocalMachine
-);
+var stampConfig = new StampConfiguration
+{
+    Text = "Approved",
+    Position = "BottomRight",
+    FontSize = 12,
+    Rotation = 45
+};
 
-// Get certificates with private keys only
-var signingCerts = WindowsCertificateStore.GetCertificatesWithPrivateKey(
-    StoreName.My,
-    StoreLocation.LocalMachine
-);
+using (var fileStream = File.OpenRead("document.pdf"))
+{
+    byte[] signedPdf = await client.SignPdfAsync(
+        fileStream,
+        "document.pdf",
+        "1234567890ABCDEF",
+        stampConfig
+    );
+    
+    File.WriteAllBytes("signed-document.pdf", signedPdf);
+}
 ```
 
-## Running the Signing Web API
+## Windows Certificate Store
 
-### Development
+### Certificate Location
 
-```bash
-cd SigningWebApi
-dotnet run
+This library accesses certificates from the Windows Certificate Store, specifically:
+- **Store Name:** `My` (Personal)
+- **Store Location:** `LocalMachine` or `CurrentUser`
+
+### Installing Test Certificates
+
+For development/testing, install a test certificate:
+
+```powershell
+# View certificates
+Get-ChildItem Cert:\LocalMachine\My
+
+# Import certificate
+Import-PfxCertificate -FilePath "certificate.pfx" -CertStoreLocation "Cert:\LocalMachine\My" -Password (ConvertTo-SecureString "password" -AsPlainText -Force)
 ```
 
-Server will start on `https://localhost:5001` (dev) or `http://localhost:5000`
+### Certificate Requirements
 
-Access Swagger UI at: `https://localhost:5001/swagger`
+For signing operations:
+1. Certificate must be installed in the Windows Certificate Store
+2. Certificate must have a private key associated
+3. Certificate should not be expired
+4. User must have access permissions to the certificate
 
-### Production
+## Integration with Other Projects
 
-```bash
-cd SigningWebApi
-dotnet publish -c Release
+- **SigningWebApi** - Uses this library as a dependency
+- **SigningActivities** - References this library for Fusion P8 integration
+- **SigningWithCertsTests** - Tests this library's functionality
+
+## Common Patterns
+
+### Pattern 1: Factory for Signed Documents
+
+```csharp
+public class DocumentSigner
+{
+    private readonly SigningWebApiClient _client;
+    
+    public DocumentSigner(string apiUrl)
+    {
+        _client = new SigningWebApiClient(apiUrl);
+    }
+    
+    public async Task<byte[]> SignAsync(byte[] documentBytes, string thumbprint)
+    {
+        using (var ms = new MemoryStream(documentBytes))
+        {
+            return await _client.SignDocumentAsync(ms, "document.pdf", thumbprint);
+        }
+    }
+}
 ```
 
-The application is configured to publish as a self-contained single file for Windows x64.
+### Pattern 2: Certificate Selection Dialog
 
-## Testing
-
-Unit tests are located in the `SigningWithCertsTests` project.
-
-```bash
-dotnet test SigningWithCertsTests
+```csharp
+public class CertificateSelector
+{
+    public static X509Certificate2 SelectCertificate()
+    {
+        var certs = WindowsCertificateStore.GetCertificatesWithPrivateKey(
+            StoreName.My,
+            StoreLocation.LocalMachine
+        );
+        
+        if (certs.Count == 0)
+            throw new Exception("No certificates with private keys found");
+        
+        // Return first or implement UI selection
+        return certs[0];
+    }
+}
 ```
 
-### Test Configuration
+## Error Handling
 
-Ensure test machine has:
-- At least one certificate with private key in Windows certificate store
-- Test certificates configured in `App.config`
+### Common Exceptions
 
-```xml
-<configuration>
-  <appSettings>
-    <add key="TestCertificateThumbprint" value="YOUR_TEST_CERT_THUMBPRINT" />
-  </appSettings>
-</configuration>
-```
+| Exception | Cause | Solution |
+|-----------|-------|----------|
+| `CertificateNotFoundException` | Certificate not found in store | Verify thumbprint and certificate installation |
+| `NoPrivateKeyException` | Certificate lacks private key | Use certificate with private key |
+| `HttpRequestException` | Cannot connect to API | Verify API URL and network connectivity |
+| `InvalidOperationException` | Signing operation failed | Check certificate validity and permissions |
 
-## Security Considerations
+## Performance Considerations
 
-### Certificate Storage
-- Certificates are stored in the secure Windows Certificate Store
-- Private keys never leave the local machine
-- Remote signing requires secure HTTPS communication
+- **Certificate Loading** - First call loads from Windows Store; consider caching
+- **API Calls** - Network-dependent; use async/await for UI responsiveness
+- **Large Documents** - Stream processing to minimize memory usage
 
-### API Security
-- Use HTTPS in production (enforced by SigningWebApi configuration)
-- Consider implementing authentication (API key, OAuth, etc.)
-- Restrict access to `/api/Signing/certificates/private-keys` endpoint
-- Audit all signing operations
+## Security Best Practices
 
-### Certificate Installation
-- Only install trusted certificates
-- Ensure certificate chains are valid
-- Regularly audit installed certificates
+1. **Never expose private keys** - This library works with Windows Certificate Store, keeping keys secure
+2. **Use HTTPS** - Always communicate with SigningWebApi over HTTPS
+3. **Certificate Validation** - Verify certificate chains and expiry before signing
+4. **Access Control** - Restrict access to private key certificates
+5. **Audit Logging** - Log all signing operations for compliance
 
 ## Troubleshooting
 
 ### Certificate Not Found
 
-**Error:** `Certificate with thumbprint ... not found`
+**Issue:** `WindowsCertificateStore.LoadCert()` returns null
 
-**Solution:**
-1. Verify certificate is installed in Windows Certificate Store
+**Solutions:**
+1. Verify certificate is installed:
    ```powershell
-   Get-ChildItem Cert:\LocalMachine\My
+   Get-ChildItem Cert:\LocalMachine\My | Where-Object Thumbprint -eq "YOUR_THUMBPRINT"
    ```
-2. Check certificate thumbprint format (should be 40 hex characters)
-3. Ensure certificate has private key (for signing operations)
+2. Check thumbprint format (40 hex characters)
+3. Ensure sufficient permissions to access certificate
 
-### API Connection Failures
+### Cannot Connect to API
 
-**Error:** `Connection refused` or `Unable to connect`
+**Issue:** `SigningWebApiClient` throws connection error
 
-**Solution:**
-1. Verify Signing Web API is running
-2. Check firewall allows access on API port
-3. Verify URL is correct and includes HTTPS
-4. Check SSL certificate is trusted (in dev, may need to disable validation)
+**Solutions:**
+1. Verify SigningWebApi is running
+2. Check URL is correct (include protocol: `https://`)
+3. Verify firewall allows connections
+4. Check SSL certificate is valid
 
-### Fusion P8 Activity Not Working
+### Missing Private Key
 
-**Error:** Activity fails during execution
+**Issue:** Certificate exists but has no private key
 
-**Solution:**
-1. Verify `SigningWebApiUrl` is configured correctly
-2. Check Fusion P8 server can reach Signing Web API over network
-3. Review Logging output for detailed error messages
-4. Ensure certificate thumbprint is valid
+**Solutions:**
+1. Reinstall certificate with private key
+2. Import from `.pfx` file (contains private key)
+3. Check `certificate.HasPrivateKey` property
 
-### PDF Stamping Issues
+## Related Documentation
 
-**Error:** Signed PDF doesn't show visible stamp
-
-**Solution:**
-1. Verify `StampConfiguration` is properly configured
-2. Check PDF is not read-only or encrypted
-3. Ensure sufficient permissions to modify PDF
-4. Review Stamping project configuration
-
-## Related Projects
-
-- **Common** - Shared data models (Certificate, Document, StampConfiguration)
-- **Files** - File handling utilities
-- **Logging** - Logging abstraction
-- **Stamping** - PDF stamping and visualization
-- **RabbitMQTests** - Messaging integration
-
-## Architecture Diagram
-
-```
-┌─────────────────────────────────────┐
-│       Fusion P8                     │
-│  (Document Management System)       │
-└──────────────┬──────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────┐
-│   SigningActivities (.NET 4.7.2)   │
-│  (Custom Lifecycle Activity)        │
-└──────────────┬──────────────────────┘
-               │
-          HTTP/HTTPS
-               │
-               ▼
-┌─────────────────────────────────────┐
-│   SigningWebApi (.NET 8.0)          │
-│  (REST API - Document Signing)      │
-│                                     │
-│  ├─ SigningController               │
-│  ├─ SigningHelper                   │
-│  └─ CertificateHelper               │
-└──────────────┬──────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────┐
-│   Signing Library (.NET Std 2.0)   │
-│                                     │
-│  ├─ WindowsCertificateStore         │
-│  └─ SigningApiClient                │
-└──────────────┬──────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────┐
-│  Windows Certificate Store          │
-│  (X.509 Certificates with keys)     │
-└─────────────────────────────────────┘
-```
+- [Windows Certificate Store Documentation](https://docs.microsoft.com/en-us/windows/win32/seccrypto/certificate-store)
+- [.NET Standard 2.0 Compatibility](https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
+- [Newtonsoft.Json Documentation](https://www.newtonsoft.com/json)
 
 ## License
 
@@ -390,8 +322,4 @@ See repository LICENSE file.
 
 ## Support
 
-For issues or questions:
-1. Check the Troubleshooting section
-2. Review Logging output
-3. Contact the development team
-4. Create an issue in the repository
+For issues or questions, refer to the project repository or contact the development team.
