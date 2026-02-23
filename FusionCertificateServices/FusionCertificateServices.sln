@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11512.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5995416D-CC94-49CB-97C5-B8D1981B6AB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{F54E0E1C-CC9F-45DA-88D0-4090FE860388}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Signing", "Signing\Signing.csproj", "{9EC3ACD7-29BA-475C-EB7A-47DD495EA579}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stamping", "Stamping\Stamping.csproj", "{B1ED0472-DDA6-3DE8-FF9E-68B07EDA22D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigningWithCertsTests", "SigningWithCertsTests\SigningWithCertsTests.csproj", "{974BCA1A-4572-4A30-BDA9-C2D6D8611A06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigningActivities", "SigningActivities\SigningActivities.csproj", "{FAAF4C52-D0DC-44A3-8468-9BB4ED865C1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigningWebApi", "SigningWebApi\SigningWebApi.csproj", "{BE35BE2A-70C4-E747-E0D2-2B15F4133FAD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9EC3ACD7-29BA-475C-EB7A-47DD495EA579}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EC3ACD7-29BA-475C-EB7A-47DD495EA579}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EC3ACD7-29BA-475C-EB7A-47DD495EA579}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EC3ACD7-29BA-475C-EB7A-47DD495EA579}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1ED0472-DDA6-3DE8-FF9E-68B07EDA22D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1ED0472-DDA6-3DE8-FF9E-68B07EDA22D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1ED0472-DDA6-3DE8-FF9E-68B07EDA22D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1ED0472-DDA6-3DE8-FF9E-68B07EDA22D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{974BCA1A-4572-4A30-BDA9-C2D6D8611A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{974BCA1A-4572-4A30-BDA9-C2D6D8611A06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{974BCA1A-4572-4A30-BDA9-C2D6D8611A06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{974BCA1A-4572-4A30-BDA9-C2D6D8611A06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAAF4C52-D0DC-44A3-8468-9BB4ED865C1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAAF4C52-D0DC-44A3-8468-9BB4ED865C1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAAF4C52-D0DC-44A3-8468-9BB4ED865C1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAAF4C52-D0DC-44A3-8468-9BB4ED865C1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE35BE2A-70C4-E747-E0D2-2B15F4133FAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE35BE2A-70C4-E747-E0D2-2B15F4133FAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE35BE2A-70C4-E747-E0D2-2B15F4133FAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE35BE2A-70C4-E747-E0D2-2B15F4133FAD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9EC3ACD7-29BA-475C-EB7A-47DD495EA579} = {F54E0E1C-CC9F-45DA-88D0-4090FE860388}
+		{B1ED0472-DDA6-3DE8-FF9E-68B07EDA22D1} = {F54E0E1C-CC9F-45DA-88D0-4090FE860388}
+		{974BCA1A-4572-4A30-BDA9-C2D6D8611A06} = {5995416D-CC94-49CB-97C5-B8D1981B6AB9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6E1725A0-8B91-4267-BFCF-6213C1967763}
+	EndGlobalSection
+EndGlobal
