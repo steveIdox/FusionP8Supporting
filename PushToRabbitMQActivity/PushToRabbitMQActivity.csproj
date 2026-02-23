@@ -55,9 +55,9 @@
       <Project>{a5a1649f-b93c-4640-aa72-3743e1071c8a}</Project>
       <Name>Format</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Messaging\Messaging.csproj">
+    <ProjectReference Include="..\Messaging\RabbitMQMessaging.csproj">
       <Project>{4d75cebd-1d2c-4666-9cee-07ad8109e9af}</Project>
-      <Name>Messaging</Name>
+      <Name>RabbitMQMessaging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

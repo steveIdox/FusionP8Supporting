@@ -20,7 +20,7 @@
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Files\Files.csproj" />
     <ProjectReference Include="..\Logging\Logging.csproj" />
-    <ProjectReference Include="..\Messaging\Messaging.csproj" />
+    <ProjectReference Include="..\Messaging\RabbitMQMessaging.csproj" />
     <ProjectReference Include="..\Signing\Signing.csproj" />
     <ProjectReference Include="..\Stamping\Stamping.csproj" />
   </ItemGroup>
