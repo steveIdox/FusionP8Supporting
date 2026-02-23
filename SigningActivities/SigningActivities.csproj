@@ -52,18 +52,6 @@
     <Compile Include="SignDocumentActivity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{e8cd30f0-c7aa-45b7-b31f-7c2d727824c5}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Files\Files.csproj">
-      <Project>{02b0b75a-8b93-49c0-8241-22637c020ff6}</Project>
-      <Name>Files</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logging\Logging.csproj">
-      <Project>{0fb446eb-d121-41c7-a67a-c274bc127b8c}</Project>
-      <Name>Logging</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Signing\Signing.csproj">
       <Project>{6dc1e2c7-3b5e-4dc5-b7a4-6628c53f0709}</Project>
       <Name>Signing</Name>
