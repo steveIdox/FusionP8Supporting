@@ -9,6 +9,7 @@
     <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="FusionP8Supporting.Common" Version="1.0.0" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
@@ -23,10 +24,5 @@
     <PackageReference Include="System.Threading.RateLimiting" Version="8.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Logging">
-      <HintPath>..\Shared\Logging\bin\Debug\netstandard2.0\Logging.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>
