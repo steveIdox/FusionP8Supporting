@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Messaging
 {
@@ -75,7 +72,7 @@ namespace Messaging
                 }
                 catch (Exception ex)
                 {
-                    Logging.Log.Error(ex.Message,"RabbitMQMessageReceipt");
+                    Logging.Log.Error(ex.Message, "RabbitMQMessageReceipt");
                     _channel.BasicNack(ea.DeliveryTag, false, requeue: false);
                 }
             };

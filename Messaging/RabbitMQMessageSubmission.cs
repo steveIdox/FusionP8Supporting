@@ -1,10 +1,7 @@
-﻿using System;
+﻿using RabbitMQ.Client;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
-using RabbitMQ.Client;
 
 namespace Messaging
 {
@@ -59,7 +56,7 @@ namespace Messaging
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            
+
             _channel.ConfirmSelect();
             _channel.QueueDeclare(
             queue: _queueName,
@@ -133,7 +130,7 @@ namespace Messaging
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            
+
             _channel.ConfirmSelect();
 
             _channel.QueueDeclare(

@@ -25,6 +25,8 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Logging\Logging.csproj" />
+    <Reference Include="Logging">
+      <HintPath>..\Shared\Logging\bin\Debug\netstandard2.0\Logging.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
