@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aspose.PDF" Version="25.3.0" />
+    <PackageReference Include="FusionP8Supporting.Common" Version="1.0.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
   </ItemGroup>
 
